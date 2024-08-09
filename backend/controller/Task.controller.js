@@ -7,7 +7,7 @@ export const create = async (req, res) => {
 
     const taskExist = await Tasks.findOne({ SameTask });
 
-    if (taskExist) {
+    if (!taskExist) {
       res.status(400).json({ error: "Task Already Exist --" });
     } else {
       const savedTask = await Taskdata.save();
