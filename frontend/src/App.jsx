@@ -1,16 +1,15 @@
-import React from "react";
-import TextField from "@mui/material/TextField";
-// import Button from "@mui/material/Button";
-// import DeleteIcon from "@mui/icons-material/Delete";
+import React, { useEffect } from "react";
+import "./App.css";
+import FinalTodo from "./assets/component/FinalTodo";
+// import TodoApp from "./assets/Components/TodoApp.jsx";
+// import Todo from "./assets/component/Todo.jsx";
+
 function App() {
   return (
-    <div>
-      <TextField id="outlined-basic" label="Task" variant="outlined" />
-      <TextField id="outlined-basic" label="Task" variant="outlined" />
-      <TextField id="outlined-basic" label="Task" variant="outlined" />
-      {/* <Button variant="outlined" startIcon={<DeleteIcon />}>
-        Delete
-      </Button> */}
+    <div style={{ width: "100vw", height: "100vh" }} className="main-container">
+      <h1>Todo Appliaction</h1>
+      {/* <Todo /> */}
+      <FinalTodo />
     </div>
   );
 }

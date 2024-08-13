@@ -3,12 +3,10 @@ import { Tasks } from "../models/Task.models.js";
 export const create = async (req, res) => {
   try {
     const Taskdata = new Tasks(req.body);
-    const { SameTask } = Taskdata;
+    const { Task } = req.body;
 
-    const taskExist = await Tasks.findOne({ SameTask });
-
-    if (!taskExist) {
-      res.status(400).json({ error: "Task Already Exist --" });
+    if (!Task) {
+      res.status(400).json({ message: "Task already exists" });
     } else {
       const savedTask = await Taskdata.save();
       res.status(200).json(savedTask);
@@ -21,31 +19,11 @@ export const create = async (req, res) => {
 export const fetch = async (req, res) => {
   try {
     const tasks = await Tasks.find();
-    if (tasks.length === 0) {
-      res.status(404).json({ error: "No Tasks Found" });
-    }
-    res.status(200).json(tasks);
+    res.status(200).json({ tasks });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
-
-// export const update = async (req, res) => {
-//   try {
-//     const id = req.params.id;
-//     const userExist = await Task.findOne({ _id: id });
-
-//     if (!userExist) {
-//       res.status(404).json({ error: "Task Not Found" });
-//     }
-//     const updatedTask = await Task.findByIdAndUpdate(id, req.body, {
-//       new: true,
-//     });
-//     res.status(200).json(updatedTask);
-//   } catch (error) {
-//     res.status(500).json({ error: "The Server does not Respond " });
-//   }
-// };
 
 export const update = async (req, res) => {
   try {
@@ -68,6 +46,7 @@ export const remove = async (req, res) => {
   try {
     const id = req.params.id;
     const task = await Tasks.findByIdAndDelete({ _id: id });
+
     if (!task) {
       return res.status(404).json({ message: "Task not found" });
     }
