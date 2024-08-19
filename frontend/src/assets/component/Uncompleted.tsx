@@ -23,7 +23,7 @@ function Uncompleted({ todo, handleedit, handleDelete, handlestatus }) {
             <MdEditCalendar
               className="edit-icon"
               onClick={() => {
-                handleedit({ Uid: item._id });
+                handleedit(item);
               }}
             />
             <MdDelete

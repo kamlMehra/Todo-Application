@@ -7,7 +7,6 @@ import FinalTodo from "./assets/component/FinalTodo";
 function App() {
   return (
     <div style={{ width: "100vw", height: "100vh" }} className="main-container">
-      <h1>Todo Appliaction</h1>
       {/* <Todo /> */}
       <FinalTodo />
     </div>

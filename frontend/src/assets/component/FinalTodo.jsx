@@ -5,20 +5,13 @@ import axios from "axios";
 import { Label, Pivot, PivotItem } from "@fluentui/react";
 import Uncompleted from "./Uncompleted";
 import Completed from "./Completed";
-let EditItemID,
-  tododata = [];
+let EditItemID;
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
+
 function FinalTodo() {
   const [count, setCount] = useState(0);
   const [toggleSubmit, setToggleSubmit] = useState(true);
-  // const [iscompletedsrcreen, setIscompletedscreen] = useState(false);
-  // function todohandler() {
-  //   setIscompletedscreen(false);
-  // }
-  // function donehandler() {
-  //   setIscompletedscreen(true);
-  // }
   const labelStyles = {
     root: { marginTop: 10 },
   };
@@ -27,6 +20,7 @@ function FinalTodo() {
     Date: "",
     Description: "",
   });
+  const [editTodoId, setEditTodoId] = useState("");
 
   const [todo, setTodo] = useState([]);
   const [completedTodos, setCompletedTodos] = useState([]);
@@ -41,10 +35,7 @@ function FinalTodo() {
     try {
       if (val == "Save") {
         console.log("DATA........", data);
-        const response = await axios.post(
-          `${BASE_URL}/api/todo/create`,
-          data
-        );
+        const response = await axios.post(`${BASE_URL}/api/todo/create`, data);
         if (response.status === 200) {
           console.log("Data successfully saved:", response.data);
           setdata({
@@ -66,7 +57,7 @@ function FinalTodo() {
       } else {
         console.log("DATA in update........", data);
         response = await axios.put(
-          `${BASE_URL}/api/todo/update/${EditItemID}`,
+          `${BASE_URL}/api/todo/update/${editTodoId}`,
           data
         );
         if (response.status === 200) {
@@ -96,9 +87,7 @@ function FinalTodo() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(
-          `${BASE_URL}/api/todo/fetch`
-        );
+        const response = await axios.get(`${BASE_URL}/api/todo/fetch`);
         const incompletedTodos = response.data.tasks.filter(
           (task) => task.Status === false
         );
@@ -136,9 +125,9 @@ function FinalTodo() {
               icon: "success",
             });
           }
+          const x = todo.filter((x) => x._id !== id);
+          setTodo(x);
         }
-        setTodo(todo.filter((item) => item.id !== id));
-        setCount(count + 1);
       });
     } catch (error) {
       console.log("Error in Deleting is ---->", error);
@@ -146,35 +135,34 @@ function FinalTodo() {
   };
 
   // UPDATING DATA ---------------------------->
-  const handleedit = async ({ Uid }) => {
-    let newedititem = todo.find(({ Uid }) => {
-      return {
-        task: todo.Task,
-        date: todo.Date,
-        description: todo.Description,
-      };
+  const handleedit = (item) => {
+    setEditTodoId(item._id)
+    setdata({
+      Task: item.Task,
+      Date: item.Date,
+      Description: item.Description,
     });
-    EditItemID = Uid;
-    console.log("Newdata =================", newedititem);
     setToggleSubmit(false);
-    console.log("Object Id is", Uid);
-    setdata(newedititem);
+
+    // let newedititem = todo.find(({ Uid }) => {
+    //   return {
+    //     task: todo.Task,
+    //     date: todo.Date,
+    //     description: todo.Description,
+    //   };
+    // });
+    // EditItemID = Uid;
+    // console.log("Newdata =================", newedititem);
+    // setToggleSubmit(false);
+    // console.log("Object Id is", Uid);
+    // setdata(newedititem);
   };
 
-  //UPDATING STATUS ----------------------------->
-  // const handlestatus = async ({ Uid }) => {
-  //   let newstatus = todo.find(({ Uid }) => {
-  //     return (tasks.Status = true);
-  //   });
-  // };
   const handlestatus = async ({ Uid }) => {
     try {
-      const response = await axios.put(
-        `${BASE_URL}/api/todo/update/${Uid}`,
-        {
-          Status: true,
-        }
-      );
+      const response = await axios.put(`${BASE_URL}/api/todo/update/${Uid}`, {
+        Status: true,
+      });
       if (response.status === 200) {
         console.log("Data successfully saved:", response.data);
         setCount(count + 1);
@@ -186,12 +174,9 @@ function FinalTodo() {
 
   const handlecompletedstatus = async ({ Uid }) => {
     try {
-      const response = await axios.put(
-        `${BASE_URL}/api/todo/update/${Uid}`,
-        {
-          Status: false,
-        }
-      );
+      const response = await axios.put(`${BASE_URL}/api/todo/update/${Uid}`, {
+        Status: false,
+      });
       if (response.status === 200) {
         console.log("Data successfully saved:", response.data);
         setCount(count + 1);
@@ -208,14 +193,14 @@ function FinalTodo() {
         <div className="todo-input">
           <div className="todo-input-item">
             <label>Todo</label>
-              <input
-                type="text"
-                placeholder="Enter your Todos"
-                required={true}
-                onChange={handleChange}
-                value={data.Task}
-                name="Task"
-              />
+            <input
+              type="text"
+              placeholder="Enter your Todos"
+              required={true}
+              onChange={handleChange}
+              value={data.Task}
+              name="Task"
+            />
           </div>
           <div className="todo-input-item">
             <label>Description</label>
