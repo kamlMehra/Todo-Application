@@ -136,9 +136,9 @@ function FinalTodo() {
               icon: "success",
             });
           }
-          setTodo(todo.filter((item) => item.id !== id));
-          setCount(count + 1);
         }
+        setTodo(todo.filter((item) => item.id !== id));
+        setCount(count + 1);
       });
     } catch (error) {
       console.log("Error in Deleting is ---->", error);
