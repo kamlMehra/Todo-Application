@@ -1,28 +1,29 @@
 import React, { useState, useEffect } from "react";
-import { FaCheck } from "react-icons/fa";
-import { MdEditCalendar } from "react-icons/md";
-import { MdDelete } from "react-icons/md";
 import "./FinalTodo.css";
 import Swal from "sweetalert2";
 import axios from "axios";
+import { Label, Pivot, PivotItem } from "@fluentui/react";
+import Uncompleted from "./Uncompleted";
+import Completed from "./Completed";
 let EditItemID,
   tododata = [];
 function FinalTodo() {
   const [count, setCount] = useState(0);
   const [toggleSubmit, setToggleSubmit] = useState(true);
-  const [iscompletedsrcreen, setIscompletedscreen] = useState(false);
-  function todohandler() {
-    setIscompletedscreen(false);
-  }
-  function donehandler() {
-    setIscompletedscreen(true);
-  }
-
+  // const [iscompletedsrcreen, setIscompletedscreen] = useState(false);
+  // function todohandler() {
+  //   setIscompletedscreen(false);
+  // }
+  // function donehandler() {
+  //   setIscompletedscreen(true);
+  // }
+  const labelStyles = {
+    root: { marginTop: 10 },
+  };
   const [data, setdata] = useState({
     Task: "",
     Date: "",
     Description: "",
-    Status: false,
   });
 
   const [todo, setTodo] = useState([]);
@@ -37,6 +38,7 @@ function FinalTodo() {
     let response;
     try {
       if (val == "Save") {
+        console.log("DATA........", data);
         const response = await axios.post(
           "http://localhost:8000/api/todo/create",
           data
@@ -47,6 +49,7 @@ function FinalTodo() {
             Task: "",
             Date: "",
             Description: "",
+            Status: false,
           });
 
           setCount(count + 1);
@@ -59,6 +62,7 @@ function FinalTodo() {
           });
         }
       } else {
+        console.log("DATA in update........", data);
         response = await axios.put(
           `http://localhost:8000/api/todo/update/${EditItemID}`,
           data
@@ -69,27 +73,11 @@ function FinalTodo() {
             Task: "",
             Date: "",
             Description: "",
+            Status: false,
           });
 
           setCount(count + 1);
           setToggleSubmit(true);
-
-          Swal.fire({
-            title: "Are you sure?",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, Update it!",
-          }).then((result) => {
-            if (result.isConfirmed) {
-              Swal.fire({
-                title: "Updated!",
-                text: "Your file has been Updated.",
-                icon: "success",
-              });
-            }
-          });
         }
       }
     } catch (error) {
@@ -136,7 +124,8 @@ function FinalTodo() {
       }).then((result) => {
         if (result.isConfirmed) {
           const response = axios.delete(
-            `http://localhost:8000/api/todo/remove/${id}`
+            `http://localhost:8000/api/todo/remove/${id}`,
+            data
           );
           if (response.status === 200) {
             Swal.fire({
@@ -169,6 +158,47 @@ function FinalTodo() {
     console.log("Object Id is", Uid);
     setdata(newedititem);
   };
+
+  //UPDATING STATUS ----------------------------->
+  // const handlestatus = async ({ Uid }) => {
+  //   let newstatus = todo.find(({ Uid }) => {
+  //     return (tasks.Status = true);
+  //   });
+  // };
+  const handlestatus = async ({ Uid }) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:8000/api/todo/update/${Uid}`,
+        {
+          Status: true,
+        }
+      );
+      if (response.status === 200) {
+        console.log("Data successfully saved:", response.data);
+        setCount(count + 1);
+      }
+    } catch (error) {
+      console.error("Error updating status:", error);
+    }
+  };
+
+  const handlecompletedstatus = async ({ Uid }) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:8000/api/todo/update/${Uid}`,
+        {
+          Status: false,
+        }
+      );
+      if (response.status === 200) {
+        console.log("Data successfully saved:", response.data);
+        setCount(count + 1);
+      }
+    } catch (error) {
+      console.error("Error updating status:", error);
+    }
+  };
+
   return (
     <div className="App">
       <h1>My Todos</h1>
@@ -176,14 +206,14 @@ function FinalTodo() {
         <div className="todo-input">
           <div className="todo-input-item">
             <label>Todo</label>
-            <input
-              type="text"
-              placeholder="Enter your Todos"
-              required={true}
-              onChange={handleChange}
-              value={data.Task}
-              name="Task"
-            />
+              <input
+                type="text"
+                placeholder="Enter your Todos"
+                required={true}
+                onChange={handleChange}
+                value={data.Task}
+                name="Task"
+              />
           </div>
           <div className="todo-input-item">
             <label>Description</label>
@@ -227,53 +257,24 @@ function FinalTodo() {
             )}
           </div>
         </div>
-        <div className="btn-area">
-          <button
-            className={`secondaryBtn ${
-              iscompletedsrcreen === false && "active"
-            }`}
-            onClick={todohandler}
-          >
-            Todo
-          </button>
-          <button
-            className={`secondaryBtn ${
-              iscompletedsrcreen === true && "active"
-            }`}
-            onClick={donehandler}
-          >
-            Done
-          </button>
-        </div>
-        <div className="todo-list">
-          {todo.map((item) => (
-            <div className="todo-list-item" key={item._id}>
-              <div className="todo-details">
-                <h3>{item.Task}</h3>
-                <h2>{item.Date}</h2>
-                <p>{item.Description}</p>
-              </div>
-              <div className="icons">
-                <FaCheck
-                  className="check-icon"
-                  aria-label="Mark as Completed"
-                />
-                <MdEditCalendar
-                  className="edit-icon"
-                  onClick={() => {
-                    handleedit({ Uid: item._id });
-                  }}
-                />
-                <MdDelete
-                  className="delete-icon"
-                  onClick={() => {
-                    handleDelete({ id: item._id });
-                  }}
-                />
-              </div>
-            </div>
-          ))}
-        </div>
+
+        <Pivot className="pivotitems PivotAddstyles">
+          <PivotItem headerText="Todos" style={{ color: "white" }}>
+            <Uncompleted
+              todo={todo}
+              handleDelete={handleDelete}
+              handleedit={handleedit}
+              handlestatus={handlestatus}
+            />
+          </PivotItem>
+          <PivotItem headerText="Done">
+            <Completed
+              completedTodos={completedTodos}
+              handleDelete={handleDelete}
+              handlecompletedstatus={handlecompletedstatus}
+            />
+          </PivotItem>
+        </Pivot>
       </div>
     </div>
   );

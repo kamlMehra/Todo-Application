@@ -13,3 +13,13 @@ body {
 /* .main-container {
   background-color: aqua;
 } */
+:global{
+  .pivotitems{
+    #Pivot1-Tab0{
+      background-color: white !important;
+    }
+}
+}
+.span.ms-Pivot-linkContent.linkContent-115{
+  color: white;
+}
