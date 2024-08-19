@@ -7,6 +7,8 @@ import Uncompleted from "./Uncompleted";
 import Completed from "./Completed";
 let EditItemID,
   tododata = [];
+
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 function FinalTodo() {
   const [count, setCount] = useState(0);
   const [toggleSubmit, setToggleSubmit] = useState(true);
@@ -40,7 +42,7 @@ function FinalTodo() {
       if (val == "Save") {
         console.log("DATA........", data);
         const response = await axios.post(
-          "http://localhost:8000/api/todo/create",
+          `${BASE_URL}/api/todo/create`,
           data
         );
         if (response.status === 200) {
@@ -64,7 +66,7 @@ function FinalTodo() {
       } else {
         console.log("DATA in update........", data);
         response = await axios.put(
-          `http://localhost:8000/api/todo/update/${EditItemID}`,
+          `${BASE_URL}/api/todo/update/${EditItemID}`,
           data
         );
         if (response.status === 200) {
@@ -95,7 +97,7 @@ function FinalTodo() {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8000/api/todo/fetch"
+          `${BASE_URL}/api/todo/fetch`
         );
         const incompletedTodos = response.data.tasks.filter(
           (task) => task.Status === false
@@ -124,7 +126,7 @@ function FinalTodo() {
       }).then((result) => {
         if (result.isConfirmed) {
           const response = axios.delete(
-            `http://localhost:8000/api/todo/remove/${id}`,
+            `${BASE_URL}/api/todo/remove/${id}`,
             data
           );
           if (response.status === 200) {
@@ -168,7 +170,7 @@ function FinalTodo() {
   const handlestatus = async ({ Uid }) => {
     try {
       const response = await axios.put(
-        `http://localhost:8000/api/todo/update/${Uid}`,
+        `${BASE_URL}/api/todo/update/${Uid}`,
         {
           Status: true,
         }
@@ -185,7 +187,7 @@ function FinalTodo() {
   const handlecompletedstatus = async ({ Uid }) => {
     try {
       const response = await axios.put(
-        `http://localhost:8000/api/todo/update/${Uid}`,
+        `${BASE_URL}/api/todo/update/${Uid}`,
         {
           Status: false,
         }
