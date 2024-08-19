@@ -12,9 +12,6 @@ const BASE_URL = import.meta.env.VITE_BASE_URL;
 function FinalTodo() {
   const [count, setCount] = useState(0);
   const [toggleSubmit, setToggleSubmit] = useState(true);
-  const labelStyles = {
-    root: { marginTop: 10 },
-  };
   const [data, setdata] = useState({
     Task: "",
     Date: "",
