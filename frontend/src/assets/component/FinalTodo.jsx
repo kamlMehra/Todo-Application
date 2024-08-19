@@ -35,8 +35,15 @@ function FinalTodo() {
     try {
       if (val == "Save") {
         console.log("DATA........", data);
+        Swal.fire({
+          title: "Creating todo..",
+          didOpen: () => {
+            Swal.showLoading();
+          },
+        });
         const response = await axios.post(`${BASE_URL}/api/todo/create`, data);
         if (response.status === 200) {
+          Swal.close();
           console.log("Data successfully saved:", response.data);
           setdata({
             Task: "",
@@ -55,13 +62,18 @@ function FinalTodo() {
           });
         }
       } else {
-        console.log("DATA in update........", data);
+        Swal.fire({
+          title: "Updating todo..",
+          didOpen: () => {
+            Swal.showLoading();
+          },
+        });
         response = await axios.put(
           `${BASE_URL}/api/todo/update/${editTodoId}`,
           data
         );
         if (response.status === 200) {
-          console.log("Data successfully saved:", response.data);
+          Swal.close();
           setdata({
             Task: "",
             Date: "",
@@ -112,13 +124,22 @@ function FinalTodo() {
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
         confirmButtonText: "Yes, delete it!",
-      }).then((result) => {
+      }).then(async (result) => {
         if (result.isConfirmed) {
-          const response = axios.delete(
+          Swal.fire({
+            title: "Deleting todo..",
+            didOpen: () => {
+              Swal.showLoading();
+            },
+          });
+
+          const response = await axios.delete(
             `${BASE_URL}/api/todo/remove/${id}`,
             data
           );
+
           if (response.status === 200) {
+            Swal.close();
             Swal.fire({
               title: "Deleted!",
               text: "Your file has been deleted.",
@@ -127,6 +148,10 @@ function FinalTodo() {
           }
           const x = todo.filter((x) => x._id !== id);
           setTodo(x);
+          const y = completedTodos.filter((x) => x._id !== id);
+          setCompletedTodos(y);
+        } else {
+          Swal.close();
         }
       });
     } catch (error) {
@@ -136,34 +161,28 @@ function FinalTodo() {
 
   // UPDATING DATA ---------------------------->
   const handleedit = (item) => {
-    setEditTodoId(item._id)
+    setEditTodoId(item._id);
     setdata({
       Task: item.Task,
       Date: item.Date,
       Description: item.Description,
     });
     setToggleSubmit(false);
-
-    // let newedititem = todo.find(({ Uid }) => {
-    //   return {
-    //     task: todo.Task,
-    //     date: todo.Date,
-    //     description: todo.Description,
-    //   };
-    // });
-    // EditItemID = Uid;
-    // console.log("Newdata =================", newedititem);
-    // setToggleSubmit(false);
-    // console.log("Object Id is", Uid);
-    // setdata(newedititem);
   };
 
   const handlestatus = async ({ Uid }) => {
     try {
+      Swal.fire({
+        title: "Completing todo..",
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
       const response = await axios.put(`${BASE_URL}/api/todo/update/${Uid}`, {
         Status: true,
       });
       if (response.status === 200) {
+        Swal.close();
         console.log("Data successfully saved:", response.data);
         setCount(count + 1);
       }
@@ -174,10 +193,17 @@ function FinalTodo() {
 
   const handlecompletedstatus = async ({ Uid }) => {
     try {
+      Swal.fire({
+        title: "Completing todo..",
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
       const response = await axios.put(`${BASE_URL}/api/todo/update/${Uid}`, {
         Status: false,
       });
       if (response.status === 200) {
+        Swal.close();
         console.log("Data successfully saved:", response.data);
         setCount(count + 1);
       }
