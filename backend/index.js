@@ -2,11 +2,11 @@ import dotenv from 'dotenv'
 
 dotenv.config()
 
-import route from './routes/Task.routes.js'
+import bodyParser from 'body-parser'
 
 import ConnectDB from './DB/index.js' 
 
-import bodyParser from 'body-parser'
+import route from './routes/Task.routes.js'
 
 import express from 'express'
 
