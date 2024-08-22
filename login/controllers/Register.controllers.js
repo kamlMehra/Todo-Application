@@ -15,7 +15,7 @@ export const signup = async (req, res) => {
     return hash;
   };
 
-  const { username, email, password, firstname, lastname } = req.body;
+  const { username, email, password,} = req.body;
   try {
     const duplicateuser = await User.find({ username, email });
     if (duplicateuser && duplicateuser.length > 0) {
@@ -28,8 +28,6 @@ export const signup = async (req, res) => {
       username,
       email,
       password: pass,
-      firstname,
-      lastname,
     });
     const saveduser = await result.save();
     res
