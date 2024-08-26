@@ -191,7 +191,7 @@ function FinalTodo() {
   const handlecompletedstatus = async ({ Uid }) => {
     try {
       Swal.fire({
-        title: "Completing todo..",
+        title: "Uncompleting todo..",
         didOpen: () => {
           Swal.showLoading();
         },
